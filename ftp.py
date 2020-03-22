@@ -5,6 +5,12 @@ from tqdm import tqdm
 from os import path
 import sys
 
+def is_file(ftp, path):
+	try:
+		ftp.cwd(path)
+		return False
+	except:
+		return True
 
 
 if path.exists('config.py') == False:
@@ -37,6 +43,7 @@ for storage in config.config:
 
 
 	ftp_files = list(filter(lambda x: x not in ['.', '..'], ftp_files))
+	ftp_files = list(filter(lambda path: is_file(ftp, storage['ftp_path'] + path), ftp_files))
 
 	if ftp_files:
 
@@ -67,15 +74,14 @@ for storage in config.config:
 				with open( new_local_file, 'wb' ) as file :
 
 					ftp.voidcmd('TYPE I')
-					total = ftp.size(filename)
+					total = ftp.size(storage['ftp_path']+filename)
 
 					with tqdm(total=total) as progress_bar:
 						def file_write(data):
 							progress_bar.update(len(data))
 							file.write(data)
 
-						ftp.retrbinary('RETR %s' % filename, file_write)
-						# ftp.retrbinary('RETR %s' % filename, file.write)
+						ftp.retrbinary('RETR %s' % storage['ftp_path']+filename, file_write)
 
 				if os.path.isfile(new_local_file) == True:
 					print('File downloaded: ' + filename )
@@ -94,9 +100,12 @@ for storage in config.config:
 			print('\nDeleting files...')
 			for filename in old_files:
 				old_local_file = storage['local_path'] + '\\' + filename
-				os.remove(old_local_file)
-				if os.path.isfile(old_local_file) == False:
-					print('File removed: ' + filename)
+
+				if os.path.isfile(old_local_file):
+					os.remove(old_local_file)
+
+					if os.path.isfile(old_local_file) == False:
+						print('File removed: ' + filename)
 		else:
 			print('\nNo old files to delete')
 
