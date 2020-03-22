@@ -13,7 +13,7 @@ def is_file(ftp, path):
 		return True
 
 
-if path.exists('config.py') == False:
+if path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)),'config.py')) == False:
 	print('\nConfig file "config.py" missing')
 	sys.exit()
 
