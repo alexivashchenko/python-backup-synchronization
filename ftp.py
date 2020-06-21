@@ -60,15 +60,18 @@ for storage in config.config:
 			print('\nNo local files')
 
 
+		download_files = ftp_files
+
+		if storage['download_files'] == 'new':
+			download_files = list(set(ftp_files) - set(local_files))
 
 
-		new_files = list(set(ftp_files) - set(local_files))
 
-		if new_files:
+		if download_files:
 			print('\nNew files:')
-			pprint(new_files)
+			pprint(download_files)
 			print('\nDownloading files...')
-			for filename in new_files:
+			for filename in download_files:
 
 				new_local_file = storage['local_path'] + '\\' + filename
 				with open( new_local_file, 'wb' ) as file :

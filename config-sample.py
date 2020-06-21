@@ -1,6 +1,7 @@
 
 config = [
 	{
+		'download_files' : 'new', # all, new
 		'ip' : '{FTP_IP_ADDRESS}',
 		'user' : '{FTP_USER_NAME}',
 		'password' : '{FTP_USER_PASSWORD}',
